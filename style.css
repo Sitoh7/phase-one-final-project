@@ -1,0 +1,28 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+#weatherForm{
+    text-align: center;
+    margin: auto;
+    background-color: 
+    rgba(84, 221, 180, 0.979);
+    
+}
+
+
+div { float: left;
+    text-align: center;
+     width: 8.3333333%;
+     margin-top: -21px;
+    }
+
+#forecast{
+    background-color: rgba(16, 197, 143, 0.979);
+  }
+
+.forecastItems{
+    background-color: rgba(16, 197, 143, 0.979);
+}
+
