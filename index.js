@@ -11,9 +11,11 @@ let time = document.getElementById("time")
 let dailyforecastobj;
 let cityobj;
 let namesList = document.getElementById("history")
+let cityName = document.getElementById("cityName")
 
 document.addEventListener('DOMContentLoaded',(e)=>{
     e.preventDefault()
+    
     //fetchNames()
     
     
@@ -21,10 +23,11 @@ document.addEventListener('DOMContentLoaded',(e)=>{
 
 form.addEventListener('submit',e=>{
     e.preventDefault()
-   // removecurrentcontent(e.target.cityName.value)
+    removecurrentcontent(e.target.cityName.value)
     
-     getcitycoordiates(e.target.cityName.value)    
-   // history(e.target.cityName.value)
+    // getcitycoordiates(e.target.cityName.value)    
+   history(e.target.cityName.value)
+   form.reset()
 })
 
 function  removecurrentcontent(x){
@@ -198,34 +201,48 @@ names.forEach(name => {
 
     // Create a delete button for each name
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
+    deleteButton.textContent = 'X';
     deleteButton.onclick = () => deleteName(name.id);
 
     li.appendChild(deleteButton);
     namesList.appendChild(li);
+    li.onclick = () => populateFormAndSubmit(name.name)
 });
 };
 
-// Function to handle form submission
+const nameExists = async (newName) => {
+    const response = await fetch('http://localhost:3000/history');
+    const names = await response.json();
 
+    // Check if the new name is already in the list (case-insensitive)
+    return names.some(name => name.name.toLowerCase() === newName.toLowerCase());
+};
+
+
+// Function to handle form submission
 async function history(x){
 const newName = x.trim();
 console.log(newName)
 
 if (newName) {
-    // Post the new name to db.json
-    await fetch('http://localhost:3000/history', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name: newName })
-    });
+    // Check if the name already exists
+    const exists = await nameExists(newName);
+    if (exists) {
+        return null
+    } else {
+        // Post the new name to db.json if it doesn't exist
+        await fetch('http://localhost:3000/history', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: newName })
+        });
 
-    e.target.cityName.value = ''; // Clear input field
+   // nameInput.value = ''; // Clear input field
     fetchNames(); // Refresh the names list
 }
-};
+}}
 
 // Function to delete a name
 const deleteName = async (id) => {
@@ -236,4 +253,10 @@ fetchNames(); // Refresh the names list
 };
 
 // Initial fetch of names when the page loads
-fetchNames();
+fetchNames()
+const populateFormAndSubmit = async (name) => {
+    cityName.value = name; // Set the input value to the clicked name
+
+    // Automatically submit the form
+    form.requestSubmit(); // Use requestSubmit to submit the form programmatically
+};

@@ -281,5 +281,30 @@
       }
     }
   },
-  "history": []
+  "history": [
+    {
+      "id": "73d4",
+      "name": "london"
+    },
+    {
+      "id": "0729",
+      "name": "mombasa"
+    },
+    {
+      "id": "3517",
+      "name": "mumbai"
+    },
+    {
+      "id": "204c",
+      "name": "nairobi"
+    },
+    {
+      "id": "9c8c",
+      "name": "dallas"
+    },
+    {
+      "id": "bb8d",
+      "name": "laval"
+    }
+  ]
 }
