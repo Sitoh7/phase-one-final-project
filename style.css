@@ -1,5 +1,6 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
     
 }
 
@@ -10,6 +11,13 @@ body{
     rgba(84, 221, 180, 0.979);
     
 }
+#history{
+    text-align: right;
+    position: relative;
+    padding-right: 5px;
+    right: 10px;
+    top: -70px;
+}
 
 
 div { float: left;
@@ -18,11 +26,35 @@ div { float: left;
      margin-top: -21px;
     }
 
-#forecast{
-    background-color: rgba(16, 197, 143, 0.979);
-  }
 
 .forecastItems{
     background-color: rgba(16, 197, 143, 0.979);
 }
 
+.hidden{
+ visibility: hidden;
+}
+
+#submit{
+    background-color: blue;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    font-size: 16px;
+}
+
+.div{
+    
+    float: left;
+    text-align: center;
+     width: 7.14%;
+     margin-top: -21px;
+     background-color: rgb(0, 255, 115);
+     border-top: 1px solid black;
+     margin-top: 5px;
+     
+}
+
+#week{
+    background-color: rgb(0, 255, 115);
+}
