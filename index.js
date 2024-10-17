@@ -15,7 +15,8 @@ let cityName = document.getElementById("cityName")
 
 document.addEventListener('DOMContentLoaded',(e)=>{
     e.preventDefault()
-    
+    fetchNames()
+
     //fetchNames()
     
     
@@ -27,7 +28,7 @@ form.addEventListener('submit',e=>{
     
     // getcitycoordiates(e.target.cityName.value)    
    history(e.target.cityName.value)
-   form.reset()
+   //form.reset()
 })
 
 function  removecurrentcontent(x){
@@ -69,7 +70,7 @@ function getWeather(latitude,longitude){
        
         weather_code = data.current.weather_code
         getforecast(data.current.time,data)
-        getweekly(data)
+        getweekly(data.current.time,data)
 
         //covert weather code to text and image
       weathercodeText(weather_code,currentCondition)
@@ -135,31 +136,45 @@ function getforecast(time,data){
 }
 
 
-function getweekly(data){
-        for(i=0;i<14;i++){
-            let week = document.getElementById("week")
-            let li1 = document.createElement("p")
-            let li2 = document.createElement("p")
-            let li3 = document.createElement("p")
-            let li4 = document.createElement("img")
-            let li5 = document.createElement("p")
-            li1.classList.add("div")
-            li1.textContent = unixtimetoday(data.daily.time[i],data.timezone)
-            li2.textContent = `${data.daily.temperature_2m_max[i]}°C`
-             weathercodeText(data.daily.weather_code[i],li3)
-             weathercodeImage(data.daily.weather_code[i],li4)
-             li5.innerHTML = `${data.daily.precipitation_probability_max[i]}% &#x1F327;`
-            week.appendChild(li1)
-            li1.appendChild(li2)
-            li1.appendChild(li5)
-            li1.appendChild(li3)
-            li1.appendChild(li4)
-            
-            
-        }
+
+
+
+function getweekly(time,data){
+    
+    const totalforecst =data.daily.time
+    const weeklyforecast = totalforecst.map((num,index)=>({ number: num, index: index })).filter(item => item.number > time );
+   
+    let weeklyforecastobj= []
+    for(i=0;i<weeklyforecast.length;i++){
+
+        let weeklyforecastobj2 = {day: weeklyforecast[i].number, temperature:data.daily.temperature_2m_max[weeklyforecast[i].index],
+                  precipitation_probability: data.daily.precipitation_probability_max[weeklyforecast[i].index],
+                 weather_code:  data.daily.weather_code[weeklyforecast[i].index], }
+                 weeklyforecastobj.push(weeklyforecastobj2)          
+    }
+    for(i=0;i<weeklyforecastobj.length;i++){
+        let week = document.getElementById("week")
+        let day = document.createElement("p")
+        let temperature = document.createElement("p")
+        let precipitation = document.createElement("p")
+        let description = document.createElement("p")
+        let img = document.createElement("img")
+        day.classList.add("div")
+        day.textContent = unixtimetoday(data.daily.time[i],data.timezone)
+        temperature.textContent = `${data.daily.temperature_2m_max[i]}°C`
+        precipitation.innerHTML = `${data.daily.precipitation_probability_max[i]}% &#x1F327;`
+        weathercodeText(data.daily.weather_code[i],description)
+        weathercodeImage(data.daily.weather_code[i],img)
+        week.appendChild(day)
+        day.appendChild(temperature)
+        day.appendChild(precipitation)
+        day.appendChild(description)
+        day.appendChild(img)
+    }
+
+
+
 }
-
-
 
 
 function unixtimetotime(unixtime,timeZone) {
@@ -195,18 +210,32 @@ const fetchNames = async () => {
 namesList.innerHTML = ''; // Clear existing list
 
 // Display names on the page
+p = document.createElement("p")
+p.textContent = `History:`
+namesList.appendChild(p)
 names.forEach(name => {
     const li = document.createElement('li');
-    li.textContent = name.name;
+    li.textContent = `${name.name} `;
+    li.classList.add(`historylist`)
 
     // Create a delete button for each name
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'X';
-    deleteButton.onclick = () => deleteName(name.id);
-
+    deleteButton.textContent = ` X`;
+    deleteButton.classList.add(`historydel`)
     li.appendChild(deleteButton);
     namesList.appendChild(li);
-    li.onclick = () => populateFormAndSubmit(name.name)
+   // deleteButton.onclick = () => deleteName(name.id);
+      deleteButton.addEventListener("click",(e)=>{
+        e.stopPropagation()
+        e.preventDefault()
+          deleteName(name.id)
+        const parentElement = deleteButton.parentElement
+        parentElement.remove()})  
+
+   
+    li.onclick = () => {populateFormAndSubmit(name.name)
+        
+    }
 });
 };
 
@@ -222,7 +251,7 @@ const nameExists = async (newName) => {
 // Function to handle form submission
 async function history(x){
 const newName = x.trim();
-console.log(newName)
+
 
 if (newName) {
     // Check if the name already exists
@@ -239,7 +268,7 @@ if (newName) {
             body: JSON.stringify({ name: newName })
         });
 
-   // nameInput.value = ''; // Clear input field
+   //nameInput.value = ''; // Clear input field
     fetchNames(); // Refresh the names list
 }
 }}
@@ -249,14 +278,59 @@ const deleteName = async (id) => {
 await fetch(`http://localhost:3000/history/${id}`, {
     method: 'DELETE'
 });
-fetchNames(); // Refresh the names list
+fetchNames(); 
 };
 
 // Initial fetch of names when the page loads
-fetchNames()
 const populateFormAndSubmit = async (name) => {
     cityName.value = name; // Set the input value to the clicked name
 
     // Automatically submit the form
     form.requestSubmit(); // Use requestSubmit to submit the form programmatically
 };
+
+
+const toggle = document.getElementById('darkModeToggle');
+
+toggle.addEventListener('change', function() {
+    if (this.checked) {
+        // Apply dark mode styles
+        document.body.style.backgroundColor = "#121212";
+        document.body.style.color = "white";
+
+        // Header styles
+        document.querySelector('#weatherForm').style.backgroundColor = "#1e1e1e";
+
+        // Button styles
+        document.querySelectorAll('button').forEach(button => {
+            button.style.backgroundColor = "#333";
+            button.style.color = "white";
+        });
+
+        // Container styles
+        document.querySelectorAll('.forecastItems').forEach(container => {
+            container.style.backgroundColor = "#282828";
+            // container.style.border = "1px solid #444";
+        });
+
+    } else {
+        // Revert back to light mode styles
+        document.body.style.backgroundColor = "white";
+        document.body.style.color = "black";
+
+        // Header styles
+        document.querySelector('#weatherForm').style.backgroundColor = "lightblue";
+
+        // Button styles
+        document.querySelectorAll('button').forEach(button => {
+            button.style.backgroundColor = "blue";
+            button.style.color = "white";
+        });
+
+        // Container styles
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.backgroundColor = "#f0f0f0";
+            container.style.border = "1px solid #ccc";
+        });
+    }
+});

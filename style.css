@@ -1,22 +1,37 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
+    list-style: none;
+    color: white;
+    border-radius: 10px;
     
 }
+
+
 
 #weatherForm{
     text-align: center;
     margin: auto;
-    background-color: 
-    rgba(84, 221, 180, 0.979);
+  
+    background: linear-gradient(to bottom,rgb(16, 197, 143, 0.979), rgba(19, 156, 115, 0.979), rgba(1, 85, 60, 0.979) );
+    border-radius: 10px;
+    
     
 }
 #history{
+        margin-top: 0; 
+    padding: 10px;
+    max-width: 150px;
     text-align: left;
-    position: relative;
-   top: -100px;
-   
-}
+    
+    max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+    padding-bottom: 100px;
+    
+    }
 
 
 div { float: left;
@@ -27,33 +42,71 @@ div { float: left;
 
 
 .forecastItems{
-    background-color: rgba(16, 197, 143, 0.979);
+    border-top: 5px solid black;
+    background: linear-gradient(to top,  rgb(86, 212, 134), rgb(40, 187, 72),rgba(3, 179, 126, 0.979)); 
 }
 
-.hidden{
- visibility: hidden;
-}
+
 
 #submit{
-    background-color: blue;
-    border-radius: 5px;
-    color: white;
+    background-color: #007bff;
     border: none;
-    font-size: 16px;
+    border-radius: 20px;
+    color: white;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
 }
+#submit:hover{
+ background-color: #0056b3;
+ cursor: pointer;
+  }
+
+
 
 .div{
     
     float: left;
     text-align: center;
-     width: 7.14%;
+     width: 16.666667%;
      margin-top: -21px;
-     background-color: rgb(0, 255, 115);
-     border-top: 1px solid black;
-     margin-top: 5px;
+     background: linear-gradient(to bottom, rgb(0, 255, 115), rgb(1, 161, 73),rgb(2, 107, 49));
+     border-top: 5px solid black;
+    
      
 }
 
-#week{
-    background-color: rgb(0, 255, 115);
+
+
+li:hover{
+    cursor: pointer;
+}
+
+#forecast{
+    margin-top: px; /* Add space below history */
+    width: 100%;
+    text-align: center;
+}
+.historylist{
+    font-style: italic;
+    font-weight: normal;
+}
+.historydel{
+    background-color: blue;
+    border: none;
+    border-radius: 2px;
+    color: white;
+}
+
+#darkModeToggle{
+    visibility: hidden;
+    
+}
+#darkModeImg:hover{
+    
+    cursor: pointer;
+    
+}
+
+#darkModeImg{
+    text-align: right;
 }

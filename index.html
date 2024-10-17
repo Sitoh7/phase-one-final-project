@@ -12,25 +12,31 @@
 <body>
 
     <form id="weatherForm">
+        <label for="darkModeToggle"><img id="darkModeImg" src="weather-icons/dark-mode.png" width="20px"></label>
         <h2>Weather </h2>
         <label>Enter City:</label>
         <input id="cityName" placeholder="City Name">
-        <button id="submit" type="submit">Search</button><br>
+        <button id="submit" type="submit">Search</button>
+       
+<input type="checkbox" id="darkModeToggle">
+        <br>
+        <p id="time"></p>
         <output id="temperature"></output>
         <p id="weathercondition"></p>
         <img id="weathericon">
-        <p id="time"></p>
+    
         <section id="history">
-            <!-- <h2><u>History:</u></h2> -->
+            <h2><u>History:</u></h2>
             
         </section>
+    </form>
         <section id="forecast">
 
         </section>
 
 
 
-    </form><br><br>
+    
     <section id="week">
 
     </section>
