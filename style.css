@@ -36,13 +36,14 @@ body{
 
 div { float: left;
     text-align: center;
-     width: 8.3333333%;
+     width: 8.257%;
      margin-top: -21px;
+     border-left: 1px solid white;
     }
 
 
 .forecastItems{
-    border-top: 5px solid black;
+    border-top: 5px solid white;
     background: linear-gradient(to top,  rgb(86, 212, 134), rgb(40, 187, 72),rgba(3, 179, 126, 0.979)); 
 }
 
@@ -63,14 +64,16 @@ div { float: left;
 
 
 
-.div{
+.weekitems{
     
     float: left;
     text-align: center;
-     width: 16.666667%;
+     width: 16.59%;
      margin-top: -21px;
      background: linear-gradient(to bottom, rgb(0, 255, 115), rgb(1, 161, 73),rgb(2, 107, 49));
-     border-top: 5px solid black;
+     border-top: 5px solid white;
+     border-left: 1px solid white;
+   
     
      
 }
@@ -82,7 +85,7 @@ li:hover{
 }
 
 #forecast{
-    margin-top: px; /* Add space below history */
+    margin-top: px; 
     width: 100%;
     text-align: center;
 }
@@ -110,3 +113,11 @@ li:hover{
 #darkModeImg{
     text-align: right;
 }
+
+body.dark-mode .weekitems{
+    border-color: black;
+}
+body.dark-mode .forecastItems{
+    border-color: black;
+}
+

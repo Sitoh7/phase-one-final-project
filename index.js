@@ -8,27 +8,19 @@ let currentCondition = document.getElementById("weathercondition")
 let currentIcon = document.getElementById("weathericon")
 let currentTime = new Date().getTime()
 let time = document.getElementById("time")
-let dailyforecastobj;
-let cityobj;
 let namesList = document.getElementById("history")
 let cityName = document.getElementById("cityName")
 
 document.addEventListener('DOMContentLoaded',(e)=>{
     e.preventDefault()
-    fetchNames()
-
-    //fetchNames()
-    
-    
+     fetchList()  //To display history 
 })
 
 form.addEventListener('submit',e=>{
     e.preventDefault()
-    removecurrentcontent(e.target.cityName.value)
-    
-    // getcitycoordiates(e.target.cityName.value)    
-   history(e.target.cityName.value)
-   //form.reset()
+    removecurrentcontent(e.target.cityName.value)  // To prevent stacking
+   history(e.target.cityName.value)// Adds input value to the history tab
+ 
 })
 
 function  removecurrentcontent(x){
@@ -55,7 +47,7 @@ function getcitycoordiates(city){
         cityLon = cityResult.lon
         getWeather(cityLat,cityLon)
       } else {
-        console.error('City not found or the result is not a city.');
+        alert('City not found or the result is not a city.');
         return null;
       }
 })
@@ -78,18 +70,18 @@ function getWeather(latitude,longitude){
   
 })
 }
-function weathercodeText(code,textId) {
-    return weathercode().then(condition => {
-        return condition[code].day.description;  
-    }).then(description => {
-        textId.textContent = description;;})
+async function weathercodeText(code,textId) {
+    const data = await weathercode();
+    const description = data[code].day.description;
+    textId.textContent = description;
+    ;
 }
 
-function weathercodeImage(code,imageid){
-    return weathercode().then(data => {
-        return data[code].day.image;  
-    }).then(description => {
-        imageid.src = description;;})
+async function weathercodeImage(code,imageid){
+    const data = await weathercode();
+    const description = data[code].day.image;
+    imageid.src = description;
+    ;
 }
 
 async function weathercode() {
@@ -102,20 +94,15 @@ async function weathercode() {
 function getforecast(time,data){
     
      const totalforecst =data.hourly.time
-     const dailyforecast = totalforecst.map((num,index)=>({ number: num, index: index })).filter(item => item.number > time && item.number<= time+43200);
-    //console.log(dailyforecast)
+     const dailyforecast = totalforecst.map((num,index)=>({ number: num, index: index })).filter(item => item.number > time && item.number<= time+43200);// filters the array to make sure that the time is from now till the next 12 hours and takes not of the index number
     let dailyforecastobj= []
     for(i=0;i<dailyforecast.length;i++){
-
-        let dailyforecastobj2 = {time: dailyforecast[i].number, temperature:data.hourly.temperature_2m[dailyforecast[i].index],
+                 let dailyforecastobj2 = {time: dailyforecast[i].number, temperature:data.hourly.temperature_2m[dailyforecast[i].index],
                   precipitation_probability: data.hourly.precipitation_probability[dailyforecast[i].index],
                  weather_code:  data.hourly.weather_code[dailyforecast[i].index], }
                  dailyforecastobj.push(dailyforecastobj2)          
-    }
-
-    
-    
-   
+    }  
+       
     for(i=0;i<dailyforecastobj.length;i++){
         let dailyforecast = document.getElementById('forecast') 
         let li = document.createElement('div')
@@ -135,12 +122,7 @@ function getforecast(time,data){
     
 }
 
-
-
-
-
 function getweekly(time,data){
-    
     const totalforecst =data.daily.time
     const weeklyforecast = totalforecst.map((num,index)=>({ number: num, index: index })).filter(item => item.number > time );
    
@@ -159,7 +141,7 @@ function getweekly(time,data){
         let precipitation = document.createElement("p")
         let description = document.createElement("p")
         let img = document.createElement("img")
-        day.classList.add("div")
+        day.classList.add("weekitems")
         day.textContent = unixtimetoday(data.daily.time[i],data.timezone)
         temperature.textContent = `${data.daily.temperature_2m_max[i]}°C`
         precipitation.innerHTML = `${data.daily.precipitation_probability_max[i]}% &#x1F327;`
@@ -178,36 +160,31 @@ function getweekly(time,data){
 
 
 function unixtimetotime(unixtime,timeZone) {
-    //const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // Get user's current time zone
 
-    // Ensure the Unix time is in seconds by checking if it's too large
-    let timestamp = unixtime > 10000000000 ? unixtime : unixtime * 1000; // If already in milliseconds, use as is; otherwise multiply by 1000
-
-    // Create a Date object
+    // Ensure the Unix time is in seconds by checking if it's too large because js uses unix time in miliseconds but the api uses  seconds
+    let timestamp = unixtime > 10000000000 ? unixtime : unixtime * 1000; 
+    
     let date = new Date(timestamp);
 
-    // Get formatted time in user's local time zone
-     const day = date.toLocaleString('en-US',{weekday:"long",timeZone:timeZone});;
-     const time = date.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:timeZone})
+    const time = date.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:timeZone})
     return `${time}`;
 }
 function unixtimetoday(unixtime,timeZone) {
      let timestamp = unixtime > 10000000000 ? unixtime : unixtime * 1000; 
     let date = new Date(timestamp);
-    const day = date.toLocaleString('en-US',{weekday:"long",timeZone:timeZone});;
-     const time = date.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:timeZone})
+    const day = date.toLocaleString('en-US',{weekday:"long",timeZone:timeZone});;    
     return `${day}`;
 }
 
 
-///TEST
 
+//History tab
 
-const fetchNames = async () => {
+const fetchList = async () => {
     const response = await fetch('http://localhost:3000/history');
     const names = await response.json();
 
-namesList.innerHTML = ''; // Clear existing list
+namesList.innerHTML = ''; // Clear existing list so they dont stack
 
 // Display names on the page
 p = document.createElement("p")
@@ -218,7 +195,7 @@ names.forEach(name => {
     li.textContent = `${name.name} `;
     li.classList.add(`historylist`)
 
-    // Create a delete button for each name
+    // Create a delete button 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = ` X`;
     deleteButton.classList.add(`historydel`)
@@ -226,11 +203,11 @@ names.forEach(name => {
     namesList.appendChild(li);
    // deleteButton.onclick = () => deleteName(name.id);
       deleteButton.addEventListener("click",(e)=>{
-        e.stopPropagation()
-        e.preventDefault()
+        e.stopPropagation()//This fixed an error where if i clicked on the button it would also click on its parent element and perform that function
           deleteName(name.id)
         const parentElement = deleteButton.parentElement
-        parentElement.remove()})  
+        parentElement.remove()
+        })  
 
    
     li.onclick = () => {populateFormAndSubmit(name.name)
@@ -243,23 +220,21 @@ const nameExists = async (newName) => {
     const response = await fetch('http://localhost:3000/history');
     const names = await response.json();
 
-    // Check if the new name is already in the list (case-insensitive)
+    // Check if the new city exists in the db.json file to stop it from repeating itself in the list
     return names.some(name => name.name.toLowerCase() === newName.toLowerCase());
 };
 
 
-// Function to handle form submission
+//Posts city name to db.json
 async function history(x){
 const newName = x.trim();
-
-
-if (newName) {
-    // Check if the name already exists
+    if (newName) {
+    // Check if the city already exists
     const exists = await nameExists(newName);
     if (exists) {
         return null
     } else {
-        // Post the new name to db.json if it doesn't exist
+        // Post the new city to db.json if it doesnt exist
         await fetch('http://localhost:3000/history', {
             method: 'POST',
             headers: {
@@ -267,9 +242,7 @@ if (newName) {
             },
             body: JSON.stringify({ name: newName })
         });
-
-   //nameInput.value = ''; // Clear input field
-    fetchNames(); // Refresh the names list
+    fetchList(); // Refresh the list
 }
 }}
 
@@ -278,59 +251,73 @@ const deleteName = async (id) => {
 await fetch(`http://localhost:3000/history/${id}`, {
     method: 'DELETE'
 });
-fetchNames(); 
+
 };
 
-// Initial fetch of names when the page loads
+
+//When a name on the list is cliked we want to populate the form with its value and then submit the form
 const populateFormAndSubmit = async (name) => {
-    cityName.value = name; // Set the input value to the clicked name
+    cityName.value = name; 
 
-    // Automatically submit the form
-    form.requestSubmit(); // Use requestSubmit to submit the form programmatically
+    form.requestSubmit(); 
 };
 
 
+
+//Dark Mode Toggle
 const toggle = document.getElementById('darkModeToggle');
 
 toggle.addEventListener('change', function() {
+    document.body.classList.toggle('dark-mode', this.checked);
     if (this.checked) {
-        // Apply dark mode styles
+        // Apply dark mode styles 
         document.body.style.backgroundColor = "#121212";
-        document.body.style.color = "white";
+        document.body.style.color = "black";
 
-        // Header styles
-        document.querySelector('#weatherForm').style.backgroundColor = "#1e1e1e";
-
-        // Button styles
+        
         document.querySelectorAll('button').forEach(button => {
             button.style.backgroundColor = "#333";
             button.style.color = "white";
         });
 
-        // Container styles
+        
         document.querySelectorAll('.forecastItems').forEach(container => {
             container.style.backgroundColor = "#282828";
-            // container.style.border = "1px solid #444";
+           
         });
+        document.querySelectorAll('.weekitems').forEach(p=> {
+            p.style.borderColor = " black";
+        })
+        document.querySelectorAll('.forecastItems').forEach(p=> {
+            p.style.borderColor = " black";
+        })
+
+        document.querySelectorAll('#history').forEach(p=>{
+            p.style.borderColor = "black";
+        }) 
+
 
     } else {
         // Revert back to light mode styles
         document.body.style.backgroundColor = "white";
-        document.body.style.color = "black";
+        document.body.style.color = "white";
 
-        // Header styles
-        document.querySelector('#weatherForm').style.backgroundColor = "lightblue";
-
-        // Button styles
+      
         document.querySelectorAll('button').forEach(button => {
             button.style.backgroundColor = "blue";
             button.style.color = "white";
         });
 
-        // Container styles
-        document.querySelectorAll('.container').forEach(container => {
-            container.style.backgroundColor = "#f0f0f0";
-            container.style.border = "1px solid #ccc";
-        });
+    
+
+        document.querySelectorAll('.weekitems').forEach(p=> {
+            p.style.borderColor = "white";
+        })
+        document.querySelectorAll('#history').forEach(p=>{
+            p.style.borderColor = "white";
+        }) 
+        document.querySelectorAll('.forecastItems').forEach(p=> {
+            p.style.borderColor = " white";
+        })
     }
 });

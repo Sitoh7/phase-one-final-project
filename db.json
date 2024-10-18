@@ -283,12 +283,20 @@
   },
   "history": [
     {
-      "id": "513b",
-      "name": "london"
+      "id": "c523",
+      "name": "paris"
     },
     {
-      "id": "ee59",
-      "name": "singapore"
+      "id": "27bc",
+      "name": "nairobi"
+    },
+    {
+      "id": "84c1",
+      "name": "Shibuya"
+    },
+    {
+      "id": "7359",
+      "name": "mombasa"
     }
   ]
 }
